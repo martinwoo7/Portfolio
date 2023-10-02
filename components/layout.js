@@ -6,13 +6,14 @@ import { Card } from "./dock/Card";
 import moment from "moment/moment";
 import querystring from "querystring";
 
-import { useSpring, animated } from "@react-spring/web";
-import { useDrag } from "@use-gesture/react";
+import { useSpring, animated, useTransition } from "@react-spring/web";
+import { useDrag, usePinch } from "@use-gesture/react";
 import RealTimeDate from "./realtime";
 import ToolItem from "./toolitem";
 import ToolText from "./tooltext";
 import SwitchMenu from "./switchmenu";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 
 const GRADIENTS = [
 	{
@@ -46,7 +47,7 @@ const GRADIENTS = [
 	},
 ];
 
-const items = ["Messages", "File", "Edit", "View", "Window", "Help"];
+const items = ["Menu", "Messages", "File", "Edit", "View", "Window", "Help"];
 const right = [
 	{ type: "icon", name: "Battery" },
 	{ type: "icon", name: "Wifi" },
@@ -74,8 +75,17 @@ async function getTrack(trackId, token) {
 const Layout = ({ children }) => {
 	const [token, setToken] = useState("");
 	const [dockVisible, setDockVisible] = useState(false);
+
+	const mounted = useSelector((state) => state.layout.mounted);
+	const dispatch = useDispatch();
+
 	const dockStyle = useSpring({
 		transform: dockVisible ? "translateY(0%)" : "translateY(80%)",
+	});
+	const menuTransitions = useTransition(mounted, {
+		from: { opacity: 0, transform: "translateY(-10px)" },
+		enter: { opacity: 1, transform: "translateY(0px)" },
+		leave: { opacity: 0, transform: "translateY(-10px)" },
 	});
 
 	const handleMouseMove = (event) => {
@@ -87,40 +97,41 @@ const Layout = ({ children }) => {
 		}
 	};
 
-	useEffect(() => {
-		const base64Credentials = Buffer.from(
-			`${process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID}:${process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET}`
-		).toString("base64");
+	// spotify integration
+	// useEffect(() => {
+	// 	const base64Credentials = Buffer.from(
+	// 		`${process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID}:${process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET}`
+	// 	).toString("base64");
 
-		const getAccessToken = async () => {
-			try {
-				const tokenResponse = await axios.post(
-					"https://accounts.spotify.com/api/token",
-					querystring.stringify({
-						grant_type: "client_credentials",
-					}),
-					{
-						headers: {
-							"Content-Type": "application/x-www-form-urlencoded",
-							Authorization: `Basic ${base64Credentials}`,
-						},
-					}
-				);
-				const { access_token, refresh_token } = tokenResponse.data;
-				console.log("Access Token:", access_token);
-				setToken(access_token);
+	// 	const getAccessToken = async () => {
+	// 		try {
+	// 			const tokenResponse = await axios.post(
+	// 				"https://accounts.spotify.com/api/token",
+	// 				querystring.stringify({
+	// 					grant_type: "client_credentials",
+	// 				}),
+	// 				{
+	// 					headers: {
+	// 						"Content-Type": "application/x-www-form-urlencoded",
+	// 						Authorization: `Basic ${base64Credentials}`,
+	// 					},
+	// 				}
+	// 			);
+	// 			const { access_token, refresh_token } = tokenResponse.data;
+	// 			console.log("Access Token:", access_token);
+	// 			setToken(access_token);
 
-				const topTracks = await getTrack(
-					"22TntnVO3lQNDR5nsvxGRs",
-					access_token
-				);
-				console.log(topTracks);
-			} catch (error) {
-				console.error("Error:", error);
-			}
-		};
-		getAccessToken();
-	}, []);
+	// 			const topTracks = await getTrack(
+	// 				"22TntnVO3lQNDR5nsvxGRs",
+	// 				access_token
+	// 			);
+	// 			console.log(topTracks);
+	// 		} catch (error) {
+	// 			console.error("Error:", error);
+	// 		}
+	// 	};
+	// 	getAccessToken();
+	// }, []);
 
 	return (
 		<div
@@ -140,12 +151,7 @@ const Layout = ({ children }) => {
 					<div className="flex gap-2 items-center">
 						{right.map((tab, index) => {
 							if (tab.type === "icon") {
-								return (
-									// <div className="text-white rounded-xl bg-[#262626] p-2">
-									// 	<IconMapper type={tab.name} size={18} />
-									// </div>
-									<ToolItem name={tab.name} key={index} />
-								);
+								return <ToolItem name={tab.name} key={index} />;
 							} else if (tab.type === "date") {
 								return (
 									<RealTimeDate type={"date"} key={index} />
@@ -159,10 +165,18 @@ const Layout = ({ children }) => {
 					</div>
 				</div>
 
-				{/* add animation to mount and unmount */}
-				<animated.div className="absolute right-0 top-11 right-1">
-					<SwitchMenu token={token} />
-				</animated.div>
+				{menuTransitions(
+					(prop, item) =>
+						item && (
+							<animated.div
+								className="absolute right-0 top-11 right-1"
+								style={prop}
+							>
+								<SwitchMenu token={token} />
+							</animated.div>
+						)
+				)}
+
 				<div>{children}</div>
 
 				<animated.div

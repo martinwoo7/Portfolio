@@ -22,7 +22,7 @@ const SwitchIcons = ({ children, active }) => {
 };
 
 // maybe consider context? Probably not needed tbh
-const SwitchMenu = ({ token }) => {
+const SwitchMenu = () => {
 	return (
 		<div className="bg-black/30 rounded-2xl flex flex-col p-2 gap-2 text-xs text-white/80">
 			<div className="flex gap-2">
@@ -130,7 +130,7 @@ const SwitchMenu = ({ token }) => {
 			</div>
 			<div className="flex">
 				<SwitchItem row={true}>
-					{token ? <WebPlayback /> : "Token not working"}
+					<WebPlayback />
 				</SwitchItem>
 			</div>
 		</div>

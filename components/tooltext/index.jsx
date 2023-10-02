@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useSpring, animated, config } from "@react-spring/web";
 import { useHover } from "@use-gesture/react";
+import { IoMdHeart } from "react-icons/io";
 
 const ToolText = ({ name }) => {
 	const [hovering, setHovering] = useState(false);
@@ -18,7 +19,7 @@ const ToolText = ({ name }) => {
 			style={hoverAnimation}
 			{...bind()}
 		>
-			<p>{name}</p>
+			{name === "Menu" ? <IoMdHeart size={22} /> : <p>{name}</p>}
 		</animated.div>
 	);
 };
