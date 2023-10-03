@@ -24,7 +24,7 @@ const SwitchIcons = ({ children, active }) => {
 // maybe consider context? Probably not needed tbh
 const SwitchMenu = () => {
 	return (
-		<div className="bg-black/30 rounded-2xl flex flex-col p-2 gap-2 text-xs text-white/80">
+		<div className="relative bg-black/30 rounded-2xl flex flex-col p-2 gap-2 text-xs text-white/80 ">
 			<div className="flex gap-2">
 				<SwitchItem row={false}>
 					<div className="flex gap-3 flex-col py-1 pr-4">

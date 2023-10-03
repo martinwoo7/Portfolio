@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import store from "../store";
 
 import GreetingScreen from "../components/greeting";
+
 const MyApp = ({ Component, pageProps }) => {
 	const [showGreeting, setShowGreeting] = useState(true);
 	const transitions = useTransition(showGreeting, {

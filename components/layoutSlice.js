@@ -4,6 +4,8 @@ export const layoutSlice = createSlice({
 	name: "layout",
 	initialState: {
 		mounted: false,
+		playing: false,
+		active: "",
 	},
 	reducers: {
 		mount: (state) => {
@@ -12,8 +14,19 @@ export const layoutSlice = createSlice({
 		unmount: (state) => {
 			state.mounted = false;
 		},
+		togglePlaying: (state) => {
+			state.playing = !state.playing;
+		},
+		handleActive: (state, action) => {
+			if (state.active === action.payload || action.payload === "") {
+				state.active = "";
+			} else {
+				state.active = action.payload;
+			}
+		},
 	},
 });
 
-export const { mount, unmount } = layoutSlice.actions;
+export const { mount, unmount, togglePlaying, handleActive } =
+	layoutSlice.actions;
 export default layoutSlice.reducer;
