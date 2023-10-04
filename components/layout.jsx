@@ -5,7 +5,7 @@ import { DockDivider } from "./dock/DockDivider";
 import { Card } from "./dock/Card";
 import { useSpring, animated, useTransition } from "@react-spring/web";
 import { useDispatch, useSelector } from "react-redux";
-import { handleActive } from "./layoutSlice";
+import { handleActive, unmount } from "./layoutSlice";
 
 import moment from "moment/moment";
 import ReactPlayer from "react-player";
@@ -189,6 +189,10 @@ const Layout = ({ children }) => {
 	// 	getAccessToken();
 	// }, []);
 
+	useEffect(() => {
+		// reset everything on initial load
+		dispatch(unmount());
+	}, []);
 	const active = useSelector((state) => state.layout.active);
 	useEffect(() => {
 		const handleOutsideClick = (event) => {
@@ -221,11 +225,11 @@ const Layout = ({ children }) => {
 	return (
 		<div onContextMenu={handleContextMenu} className="h-full">
 			<div
-				className="relative bg-zinc-950 flex justify-center items-center h-screen p-2 overflow-hidden"
+				className="relative bg-zinc-950 flex justify-center items-center h-screen p-2 z-20"
 				onMouseMove={handleMouseMove}
 			>
 				{/* bg-zinc-950 below */}
-				<div className="flex flex-col relative rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 h-full w-full">
+				<div className="flex flex-col relative rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 h-full w-full z-20">
 					<div className="flex w-full h-10 bg-black/20 justify-between items-center px-3">
 						<div className="flex gap-2 items-center">
 							{buttonData.map((tab, index) => {
@@ -309,14 +313,17 @@ const Layout = ({ children }) => {
 
 					<animated.div
 						className={
-							"fixed flex bottom-3 w-full justify-center flex-col items-center z-100"
+							"fixed flex bottom-3 w-full justify-center flex-col items-center z-10"
 						}
 						style={dockStyle}
 					>
 						<div className="bg-black/40 mb-6 h-1 w-7 rounded-full" />
 
 						{/* <IoIosArrowUp size="2rem" className="text-white mb-4" /> */}
-						<div style={{ width: "fit-content" }}>
+						<div
+							style={{ width: "fit-content" }}
+							className="relative z-10"
+						>
 							<Dock>
 								{GRADIENTS.map((item, index) =>
 									item ? (

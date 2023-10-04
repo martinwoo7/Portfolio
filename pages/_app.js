@@ -14,7 +14,7 @@ const MyApp = ({ Component, pageProps }) => {
 		enter: { opacity: 1 },
 		leave: {
 			position: "absolute",
-			zIndex: 1,
+			zIndex: 100,
 			top: 0,
 			left: 0,
 			right: 0,
