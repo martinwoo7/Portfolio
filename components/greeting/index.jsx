@@ -2,10 +2,13 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { BsQuestionCircle } from "react-icons/bs";
 import { IoArrowForwardCircleOutline } from "react-icons/io5";
+import { IoIosPower } from "react-icons/io";
 
 import Tooltip from "../tooltip";
 import { useHover } from "@use-gesture/react";
 import { useSpring, animated, useTransition } from "@react-spring/web";
+import { useDispatch } from "react-redux";
+import { asyncLogin, asyncLogout, login, logout } from "./greetingSlice";
 
 import LoadingBar from "../loadingbar";
 const GreetingScreen = ({ onDismiss }) => {
@@ -14,6 +17,17 @@ const GreetingScreen = ({ onDismiss }) => {
 	const [imgHover, setImgHover] = useState(false);
 	const [inputValue, setInputValue] = useState(false);
 	const [value, setValue] = useState("");
+
+	const dispatch = useDispatch();
+	useEffect(() => {
+		const isLoggedIn = !!JSON.parse(localStorage.getItem("loggedIn"));
+		console.log("login state", isLoggedIn);
+		// Dispatch the appropriate action based on the localStorage value
+		if (isLoggedIn) {
+			dispatch(login());
+			onSubmit();
+		}
+	}, []);
 
 	useEffect(() => {
 		if (value) {
@@ -54,11 +68,15 @@ const GreetingScreen = ({ onDismiss }) => {
 	});
 
 	const onSubmit = (event) => {
-		event.preventDefault();
+		if (event) {
+			event.preventDefault();
+		}
+
 		console.log("password inputted is", value);
 		console.log("Imitating load");
 		setIsLoading(true);
 		try {
+			dispatch(asyncLogin());
 			setTimeout(() => {
 				console.log("Loading done!");
 				onDismiss();
@@ -161,6 +179,8 @@ const GreetingScreen = ({ onDismiss }) => {
 						)
 					)}
 				</div>
+				{/* log out, turn off buttons */}
+				<div></div>
 			</div>
 		</div>
 	);

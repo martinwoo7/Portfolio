@@ -1,5 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/router";
+import {
+	setActive,
+	openWindow,
+	closeWindow,
+} from "../../popupWindow/windowSlice";
 import {
 	animated,
 	useIsomorphicLayoutEffect,
@@ -14,9 +18,11 @@ import { useMousePosition } from "../hooks/useMousePosition";
 
 import { useDock } from "../Dock/DockContext";
 import styles from "../../../styles/Dock.module.css";
+import { useDispatch, useSelector } from "react-redux";
 const INITIAL_WIDTH = 48;
 
-export const DockCard = ({ children, value }) => {
+export const DockCard = ({ children, value, src }) => {
+	const dispatch = useDispatch();
 	const cardRef = useRef(null);
 	const [elCenterX, setElCenterX] = useState(0);
 	const [hovering, setHovering] = useState(false);
@@ -33,6 +39,11 @@ export const DockCard = ({ children, value }) => {
 		},
 	});
 
+	function openSource() {
+		const urlToOpen = "https://github.com/martinwoo7/Portfolio"
+		window.open(urlToOpen, '_blank')
+	}
+
 	const opacity = useSpringValue(0);
 	const y = useSpringValue(0, {
 		config: {
@@ -42,7 +53,7 @@ export const DockCard = ({ children, value }) => {
 	});
 
 	const dock = useDock();
-	const router = useRouter();
+	const opened = useSelector((state) => state.window.opened);
 
 	useMousePosition(
 		{
@@ -99,10 +110,16 @@ export const DockCard = ({ children, value }) => {
 							y.set(0);
 							isAnimating.current = false;
 							timeoutRef.current = undefined;
+							if (!opened.includes(value)) {
+								if (value === "Source") {
+
+								} else {
+									console.log("Opening", value);
+									dispatch(openWindow(value));
+								}
+							}
 						}, 30);
-						// setTimeout(() => {
-						// 	router.push("/");
-						// }, 2000);
+
 						y.stop();
 					}
 					return { reverse: true };
@@ -114,24 +131,17 @@ export const DockCard = ({ children, value }) => {
 			 * on a second click if we're currently animating
 			 */
 			clearTimeout(timeoutRef.current);
-			// opacity.start(0);
+			opacity.start(0);
 			y.start(0);
 			isAnimating.current = false;
 		}
-		// also need to handle navigation
 	};
-
 	useEffect(() => {
-		if (dock.activeCard !== value) {
-			// deactive the current active card if there is one
-			if (dock.activeCard !== null) {
-				// deactive the previously active card - enter code here
-				opacity.start(0);
-				y.start(0);
-			}
+		if (!opened.includes(value)) {
+			opacity.start(0);
+			isAnimating.current = false;
 		}
-	}, [dock.activeCard]);
-
+	}, [opened]);
 	return (
 		<div className={styles.dockCardContainer}>
 			<animated.div
@@ -148,12 +158,16 @@ export const DockCard = ({ children, value }) => {
 				<animated.button
 					{...hover()}
 					ref={cardRef}
-					className={styles.dockCard}
-					onClick={handleClick}
+					className={`${styles.dockCard}`}
+					onClick={value === "Source" ? openSource : handleClick}
 					style={{
 						width: size,
 						height: size,
 						// y,
+						backgroundImage: `url(${src})`,
+						backgroundPosition: "center",
+						backgroundSize: "cover",
+						backgroundRepeat: "no-repeat",
 					}}
 				>
 					{children}

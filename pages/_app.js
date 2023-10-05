@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import store from "../store";
 
 import GreetingScreen from "../components/greeting";
+
 const MyApp = ({ Component, pageProps }) => {
 	const [showGreeting, setShowGreeting] = useState(true);
 	const transitions = useTransition(showGreeting, {
@@ -13,7 +14,7 @@ const MyApp = ({ Component, pageProps }) => {
 		enter: { opacity: 1 },
 		leave: {
 			position: "absolute",
-			zIndex: 1,
+			zIndex: 100,
 			top: 0,
 			left: 0,
 			right: 0,

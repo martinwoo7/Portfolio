@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
+import { setVolume } from "../layoutSlice";
 
 import {
 	IoIosWifi,
@@ -22,9 +23,9 @@ const SwitchIcons = ({ children, active }) => {
 };
 
 // maybe consider context? Probably not needed tbh
-const SwitchMenu = ({ token }) => {
+const SwitchMenu = () => {
 	return (
-		<div className="bg-black/30 rounded-2xl flex flex-col p-2 gap-2 text-xs text-white/80">
+		<div className="relative bg-black/30 rounded-2xl flex flex-col p-2 gap-2 text-xs text-white/80 ">
 			<div className="flex gap-2">
 				<SwitchItem row={false}>
 					<div className="flex gap-3 flex-col py-1 pr-4">
@@ -116,7 +117,7 @@ const SwitchMenu = ({ token }) => {
 				<SwitchItem row={true}>
 					<div className="flex flex-col gap-2 pb-1">
 						<p>Display</p>
-						<Slider />
+						<Slider purpose="display"/>
 					</div>
 				</SwitchItem>
 			</div>
@@ -124,13 +125,13 @@ const SwitchMenu = ({ token }) => {
 				<SwitchItem row={true}>
 					<div className="flex flex-col gap-2 pb-1">
 						<p>Sound</p>
-						<Slider />
+						<Slider purpose="sound"/>
 					</div>
 				</SwitchItem>
 			</div>
 			<div className="flex">
 				<SwitchItem row={true}>
-					{token ? <WebPlayback /> : "Token not working"}
+					<WebPlayback />
 				</SwitchItem>
 			</div>
 		</div>
