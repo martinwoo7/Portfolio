@@ -38,20 +38,20 @@ const Home = () => {
 			className="rounded-b-xl overflow-hidden flex"
 			style={{ height: position.height - 50, width: position.width - 16 }}
 		>
-			{/* {transitions((props, item) => {
+			{transitions((props, item) => {
 				const componentToRender = componentMapping[item];
 				return (
 					item && (
-						<animated.div style={props}>
+						<animated.div style={props} className={"w-full"}>
 							{componentToRender}
 						</animated.div>
 					)
 				)
-			})} */}
-			<animated.div className={"w-full"}>
+			})}
+			{/* <animated.div className={"w-full"}>
 				<WallpaperWindow name="Wallpapers" />
-				{/* <AboutWindow name="About" /> */}
-			</animated.div>
+				<AboutWindow name="About" />
+			</animated.div> */}
 		</div>
 	);
 };

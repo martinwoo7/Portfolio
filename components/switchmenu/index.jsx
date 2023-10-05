@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
+import { setVolume } from "../layoutSlice";
 
 import {
 	IoIosWifi,
@@ -116,7 +117,7 @@ const SwitchMenu = () => {
 				<SwitchItem row={true}>
 					<div className="flex flex-col gap-2 pb-1">
 						<p>Display</p>
-						<Slider />
+						<Slider purpose="display"/>
 					</div>
 				</SwitchItem>
 			</div>
@@ -124,7 +125,7 @@ const SwitchMenu = () => {
 				<SwitchItem row={true}>
 					<div className="flex flex-col gap-2 pb-1">
 						<p>Sound</p>
-						<Slider />
+						<Slider purpose="sound"/>
 					</div>
 				</SwitchItem>
 			</div>

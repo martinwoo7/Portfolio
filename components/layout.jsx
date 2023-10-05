@@ -6,6 +6,7 @@ import { Card } from "./dock/Card";
 import { useSpring, animated, useTransition } from "@react-spring/web";
 import { useDispatch, useSelector } from "react-redux";
 import { handleActive, unmount } from "./layoutSlice";
+import { togglePlaying } from "./layoutSlice";
 
 import moment from "moment/moment";
 import ReactPlayer from "react-player";
@@ -24,6 +25,9 @@ import FileMenu from "./toolmenu/File";
 import FinderMenu from "./toolmenu/Finder";
 import MenuMenu from "./toolmenu/Menu";
 import ContextMenu from "./contextmenu";
+
+import calico from "../public/images/calico.jpg";
+import cathedral from "../public/images/cathedral.jpg";
 
 const GRADIENTS = [
 	{
@@ -53,7 +57,7 @@ const GRADIENTS = [
 	null,
 	{
 		src: "https://products.ls.graphics/mesh-gradients/images/36.-Pale-Chestnut-p-130x130q80.jpeg",
-		title: "Settings",
+		title: "Source",
 	},
 ];
 
@@ -68,10 +72,16 @@ const Layout = ({ children }) => {
 	});
 	const [showContextMenu, setShowContextMenu] = useState(false);
 	const handleContextMenu = (e) => {
-		console.log(e);
 		e.preventDefault(); // Prevent the default context menu
-		const clickX = e.clientX;
-		const clickY = e.clientY;
+		const menuWidth = 215;
+		const menuHeight = 290;
+		const screenWidth = window.innerWidth - 20;
+		const screenHeight = window.innerHeight - 20;
+		const x = e.clientX;
+		const y = e.clientY;
+		const clickX = Math.min(x, screenWidth - menuWidth);
+		const clickY = Math.min(y, screenHeight - menuHeight);
+
 		setContextMenuPosition({ x: clickX, y: clickY });
 		setShowContextMenu(true);
 	};
@@ -103,6 +113,7 @@ const Layout = ({ children }) => {
 
 	const mounted = useSelector((state) => state.layout.mounted);
 	const playing = useSelector((state) => state.layout.playing);
+	const volume = useSelector((state) => state.layout.volume);
 	const dispatch = useDispatch();
 
 	const dockStyle = useSpring({
@@ -228,8 +239,19 @@ const Layout = ({ children }) => {
 				className="relative bg-zinc-950 flex justify-center items-center h-screen p-2 z-20"
 				onMouseMove={handleMouseMove}
 			>
-				{/* bg-zinc-950 below */}
-				<div className="flex flex-col relative rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 h-full w-full z-20">
+				{/* 
+					bg-gradient-to-r from-cyan-500 to-blue-500 below
+					bg-gradient-to-r from-purple-500 to-pink-500
+				*/}
+				<div
+					// style={{
+					// 	backgroundImage: `url(${calico.src})`,
+					// 	backgroundPosition: "center",
+					// 	backgroundSize: "cover",
+					// 	backgroundRepeat: "no-repeat",
+					// }}
+					className="bg-gradient-to-r from-purple-500 to-pink-500 flex flex-col relative rounded-2xl h-full w-full z-20"
+				>
 					<div className="flex w-full h-10 bg-black/20 justify-between items-center px-3">
 						<div className="flex gap-2 items-center">
 							{buttonData.map((tab, index) => {
@@ -269,7 +291,8 @@ const Layout = ({ children }) => {
 								playing={playing}
 								width="100%" // Set the width to your desired value
 								height="100%"
-								volume={0.3}
+								volume={volume}
+								onEnded={() => dispatch(togglePlaying())}
 							/>
 						</div>
 						<div className="flex gap-2 items-center">
@@ -330,6 +353,7 @@ const Layout = ({ children }) => {
 										<DockCard
 											key={index}
 											value={item.title}
+											src={item.src}
 										>
 											<Card src={item.src} />
 										</DockCard>

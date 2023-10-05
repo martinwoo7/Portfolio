@@ -21,7 +21,7 @@ import styles from "../../../styles/Dock.module.css";
 import { useDispatch, useSelector } from "react-redux";
 const INITIAL_WIDTH = 48;
 
-export const DockCard = ({ children, value }) => {
+export const DockCard = ({ children, value, src }) => {
 	const dispatch = useDispatch();
 	const cardRef = useRef(null);
 	const [elCenterX, setElCenterX] = useState(0);
@@ -38,6 +38,11 @@ export const DockCard = ({ children, value }) => {
 			tension: 320,
 		},
 	});
+
+	function openSource() {
+		const urlToOpen = "https://github.com/martinwoo7/Portfolio"
+		window.open(urlToOpen, '_blank')
+	}
 
 	const opacity = useSpringValue(0);
 	const y = useSpringValue(0, {
@@ -106,8 +111,12 @@ export const DockCard = ({ children, value }) => {
 							isAnimating.current = false;
 							timeoutRef.current = undefined;
 							if (!opened.includes(value)) {
-								console.log("Opening", value);
-								dispatch(openWindow(value));
+								if (value === "Source") {
+
+								} else {
+									console.log("Opening", value);
+									dispatch(openWindow(value));
+								}
 							}
 						}, 30);
 
@@ -149,12 +158,16 @@ export const DockCard = ({ children, value }) => {
 				<animated.button
 					{...hover()}
 					ref={cardRef}
-					className={styles.dockCard}
-					onClick={handleClick}
+					className={`${styles.dockCard}`}
+					onClick={value === "Source" ? openSource : handleClick}
 					style={{
 						width: size,
 						height: size,
 						// y,
+						backgroundImage: `url(${src})`,
+						backgroundPosition: "center",
+						backgroundSize: "cover",
+						backgroundRepeat: "no-repeat",
 					}}
 				>
 					{children}

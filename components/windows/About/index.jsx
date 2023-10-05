@@ -1,5 +1,7 @@
 import PopupWindow from "../../popupWindow";
 import Link from "next/link";
+import Image from "next/image";
+import face from "../../../public/images/face.jpg";
 
 import { useSpring, animated, useTransition } from "@react-spring/web";
 import { useHover } from "@use-gesture/react";
@@ -36,10 +38,14 @@ const AboutWindow = ({ name }) => {
 		<PopupWindow title="About Me" name={name}>
 			<div className="text-white bg-zinc-900 w-full h-full rounded-b-xl p-3 px-10 flex flex-col">
 				<div className="flex items-center gap-12 justify-center mt-4 mb-8">
-					<img
-						src="images/face.jpg"
-						className="w-48 h-48 rounded-full"
+					<Image
+						src={face}
+						// className="w-48 h-48 rounded-full"
+                        className="rounded-full"
+						width={192}
+						height={192}
 						alt="Image of the developer"
+						priority
 					/>
 					<div className="flex flex-col gap-2">
 						<animated.h1 className="text-4xl">

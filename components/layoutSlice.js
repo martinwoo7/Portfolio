@@ -6,6 +6,7 @@ export const layoutSlice = createSlice({
 		mounted: false,
 		playing: false,
 		active: "",
+		volume: 0.5,
 	},
 	reducers: {
 		mount: (state) => {
@@ -24,9 +25,12 @@ export const layoutSlice = createSlice({
 				state.active = action.payload;
 			}
 		},
+		setVolume: (state, action) => {
+			state.volume = action.payload;
+		},
 	},
 });
 
-export const { mount, unmount, togglePlaying, handleActive } =
+export const { mount, unmount, togglePlaying, handleActive, setVolume } =
 	layoutSlice.actions;
 export default layoutSlice.reducer;
