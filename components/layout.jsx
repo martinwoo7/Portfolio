@@ -52,7 +52,7 @@ const GRADIENTS = [
 	},
 	{
 		src: "https://products.ls.graphics/mesh-gradients/images/15.-Perfume_1-p-130x130q80.jpeg",
-		title: "Random",
+		title: "Settings",
 	},
 	null,
 	{
@@ -111,9 +111,13 @@ const Layout = ({ children }) => {
 		{ type: "time", time: moment() },
 	];
 
+	// Redux states
 	const mounted = useSelector((state) => state.layout.mounted);
 	const playing = useSelector((state) => state.layout.playing);
 	const volume = useSelector((state) => state.layout.volume);
+	const active = useSelector((state) => state.layout.active);
+	const unlocked = useSelector((state) => state.layout.unlocked);
+
 	const dispatch = useDispatch();
 
 	const dockStyle = useSpring({
@@ -155,6 +159,8 @@ const Layout = ({ children }) => {
 		leave: { opacity: 0, transform: "translateY(-10px)" },
 	});
 
+	const barStyle = useSpring({ opacity: unlocked ? 1 : 0 });
+
 	const handleMouseMove = (event) => {
 		const { _, clientY } = event;
 		if (clientY <= window.innerHeight - 130) {
@@ -164,47 +170,20 @@ const Layout = ({ children }) => {
 		}
 	};
 
-	// spotify integration
-	// useEffect(() => {
-	// 	const base64Credentials = Buffer.from(
-	// 		`${process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID}:${process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET}`
-	// 	).toString("base64");
-
-	// 	const getAccessToken = async () => {
-	// 		try {
-	// 			const tokenResponse = await axios.post(
-	// 				"https://accounts.spotify.com/api/token",
-	// 				querystring.stringify({
-	// 					grant_type: "client_credentials",
-	// 				}),
-	// 				{
-	// 					headers: {
-	// 						"Content-Type": "application/x-www-form-urlencoded",
-	// 						Authorization: `Basic ${base64Credentials}`,
-	// 					},
-	// 				}
-	// 			);
-	// 			const { access_token, refresh_token } = tokenResponse.data;
-	// 			console.log("Access Token:", access_token);
-	// 			setToken(access_token);
-
-	// 			const topTracks = await getTrack(
-	// 				"22TntnVO3lQNDR5nsvxGRs",
-	// 				access_token
-	// 			);
-	// 			console.log(topTracks);
-	// 		} catch (error) {
-	// 			console.error("Error:", error);
-	// 		}
-	// 	};
-	// 	getAccessToken();
-	// }, []);
-
+	// useEffects
 	useEffect(() => {
 		// reset everything on initial load
 		dispatch(unmount());
 	}, []);
-	const active = useSelector((state) => state.layout.active);
+
+	useEffect(() => {
+		if (unlocked) {
+			setDockVisible(false);
+		} else {
+			setDockVisible(true);
+		}
+	}, [unlocked]);
+
 	useEffect(() => {
 		const handleOutsideClick = (event) => {
 			// console.log(!event.target.closest(".menu-container"))
@@ -212,13 +191,20 @@ const Layout = ({ children }) => {
 				setActiveButton("");
 				dispatch(handleActive(""));
 			}
+			if (
+				mounted &&
+				!event.target.closest(".switch-menu") &&
+				!event.target.closest(".tool-icon")
+			) {
+				dispatch(unmount());
+			}
 		};
 		document.addEventListener("click", handleOutsideClick);
 
 		return () => {
 			document.removeEventListener("click", handleOutsideClick);
 		};
-	}, [active]);
+	}, [active, mounted]);
 
 	useEffect(() => {
 		const handleClick = (event) => {
@@ -237,7 +223,7 @@ const Layout = ({ children }) => {
 		<div onContextMenu={handleContextMenu} className="h-full">
 			<div
 				className="relative bg-zinc-950 flex justify-center items-center h-screen p-2 z-20"
-				onMouseMove={handleMouseMove}
+				onMouseMove={unlocked ? handleMouseMove : null}
 			>
 				{/* 
 					bg-gradient-to-r from-cyan-500 to-blue-500 below
@@ -250,7 +236,7 @@ const Layout = ({ children }) => {
 					// 	backgroundSize: "cover",
 					// 	backgroundRepeat: "no-repeat",
 					// }}
-					className="bg-gradient-to-r from-purple-500 to-pink-500 flex flex-col relative rounded-2xl h-full w-full z-20"
+					className="overflow-hidden bg-gradient-to-r from-purple-500 to-pink-500 flex flex-col relative rounded-2xl h-full w-full z-20"
 				>
 					<div className="flex w-full h-10 bg-black/20 justify-between items-center px-3">
 						<div className="flex gap-2 items-center">
@@ -298,9 +284,22 @@ const Layout = ({ children }) => {
 						<div className="flex gap-2 items-center">
 							{right.map((tab, index) => {
 								if (tab.type === "icon") {
-									return (
-										<ToolItem name={tab.name} key={index} />
-									);
+									if (tab.name === "Tool") {
+										return (
+											<ToolItem
+												name={tab.name}
+												key={index}
+												className="tool-icon"
+											/>
+										);
+									} else {
+										return (
+											<ToolItem
+												name={tab.name}
+												key={index}
+											/>
+										);
+									}
 								} else if (tab.type === "date") {
 									return (
 										<RealTimeDate
@@ -327,7 +326,7 @@ const Layout = ({ children }) => {
 									className="absolute right-0 top-11 right-1 z-40 backdrop-blur-lg"
 									style={prop}
 								>
-									<SwitchMenu />
+									<SwitchMenu className="switch-menu" />
 								</animated.div>
 							)
 					)}
@@ -336,12 +335,14 @@ const Layout = ({ children }) => {
 
 					<animated.div
 						className={
-							"fixed flex bottom-3 w-full justify-center flex-col items-center z-10"
+							"absolute flex bottom-1 w-full justify-center flex-col items-center z-10"
 						}
 						style={dockStyle}
 					>
-						<div className="bg-black/40 mb-6 h-1 w-7 rounded-full" />
-
+						<animated.div
+							style={barStyle}
+							className="bg-black/40 mb-5 h-1 w-7 rounded-full"
+						/>
 						{/* <IoIosArrowUp size="2rem" className="text-white mb-4" /> */}
 						<div
 							style={{ width: "fit-content" }}

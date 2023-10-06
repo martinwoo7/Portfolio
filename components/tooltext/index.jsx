@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSpring, animated, config } from "@react-spring/web";
 import { useHover } from "@use-gesture/react";
 import { IoMdHeart } from "react-icons/io";
 import { useSelector } from "react-redux";
 
-const ToolText = ({ name }) => {
+const ToolText = ({ name, onClick }) => {
 	const [hovering, setHovering] = useState(false);
 	const active = useSelector((state) => state.layout.active);
 	const bind = useHover(({ hovering }) => {
@@ -24,6 +24,7 @@ const ToolText = ({ name }) => {
 					backgroundColor: "rgba(0, 0, 0, 0.2)",
 				}),
 			}}
+			onClick={onClick}
 			{...bind()}
 		>
 			{name === "Menu" ? <IoMdHeart size={22} /> : <p>{name}</p>}

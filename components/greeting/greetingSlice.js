@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { setWithExpiry } from "../../scripts/utils";
 
 const initialState = {
 	loggedIn: false,
@@ -20,12 +19,13 @@ export const greetingSlice = createSlice({
 });
 
 export const asyncLogin = () => (dispatch) => {
-	localStorage.setItem("loggedIn", true);
+	// localStorage.setItem("loggedIn", true);
+	setWithExpiry("loggedIn", true, 60)
 	dispatch(login());
 };
 
 export const asyncLogout = () => (dispatch) => {
-	localStorage.setItem("loggedIn", false);
+	localStorage.removeItem("loggedIn");
 	dispatch(logout());
 };
 

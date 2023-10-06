@@ -1,19 +1,21 @@
 import { useState } from "react";
-import { useSpring, animated } from "@react-spring/web";
-import { setVolume } from "../layoutSlice";
+import { useSpring, animated, useTransition } from "@react-spring/web";
 
 import {
 	IoIosWifi,
 	IoIosBluetooth,
 	IoIosCloud,
 	IoIosMoon,
-	IoIosBonfire,
 	IoIosDesktop,
 } from "react-icons/io";
 
 import SwitchItem from "./SwitchItem";
 import Slider from "../slider";
 import WebPlayback from "../webplayback";
+import { useSelector, useDispatch } from "react-redux";
+import { toggleDock } from "../layoutSlice";
+
+import Lock from "./Lock";
 
 const SwitchIcons = ({ children, active }) => {
 	const classname = active
@@ -24,8 +26,11 @@ const SwitchIcons = ({ children, active }) => {
 
 // maybe consider context? Probably not needed tbh
 const SwitchMenu = () => {
+
+	const dispatch = useDispatch();
+
 	return (
-		<div className="relative bg-black/30 rounded-2xl flex flex-col p-2 gap-2 text-xs text-white/80 ">
+		<div className="relative bg-black/30 rounded-2xl flex flex-col p-2 gap-2 text-xs text-white/80 switch-menu">
 			<div className="flex gap-2">
 				<SwitchItem row={false}>
 					<div className="flex gap-3 flex-col py-1 pr-4">
@@ -95,17 +100,18 @@ const SwitchMenu = () => {
 					</SwitchItem>
 
 					<div className="flex flex-grow gap-2">
-						<SwitchItem row={false}>
-							<div className="flex flex-col items-center">
-								<IoIosBonfire size={20} className="my-1" />
-
-								<p>Keyboard</p>
-								<p>Brightness</p>
-							</div>
+						<SwitchItem
+							row={false}
+							onClick={() => {
+								dispatch(toggleDock());
+							}}
+						>
+							<Lock />
 						</SwitchItem>
+						
 						<SwitchItem row={false}>
-							<div className="flex flex-col items-center px-2">
-								<IoIosDesktop size={20} className="my-1" />
+							<div className="flex flex-col items-center w-16">
+								<IoIosDesktop size={24} className="my-1" />
 								<p>Toggle</p>
 								<p>Device</p>
 							</div>
@@ -117,7 +123,7 @@ const SwitchMenu = () => {
 				<SwitchItem row={true}>
 					<div className="flex flex-col gap-2 pb-1">
 						<p>Display</p>
-						<Slider purpose="display"/>
+						<Slider purpose="display" />
 					</div>
 				</SwitchItem>
 			</div>
@@ -125,7 +131,7 @@ const SwitchMenu = () => {
 				<SwitchItem row={true}>
 					<div className="flex flex-col gap-2 pb-1">
 						<p>Sound</p>
-						<Slider purpose="sound"/>
+						<Slider purpose="sound" />
 					</div>
 				</SwitchItem>
 			</div>

@@ -1,8 +1,8 @@
-import PopupWindow from "../../popupWindow";
 import Scrollbars from "react-custom-scrollbars-2";
 import { useSpring, animated, useTransition } from "@react-spring/web";
 import { useHover } from "@use-gesture/react";
 import { useState } from "react";
+import { PopupWindow } from "../../popupWindow";
 
 const WallpaperWindow = ({ name }) => {
 	return (

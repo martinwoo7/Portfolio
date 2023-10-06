@@ -9,6 +9,7 @@ import { useHover } from "@use-gesture/react";
 import { useSpring, animated, useTransition } from "@react-spring/web";
 import { useDispatch } from "react-redux";
 import { asyncLogin, asyncLogout, login, logout } from "./greetingSlice";
+import { getWithExpiry } from "../../scripts/utils";
 
 import LoadingBar from "../loadingbar";
 const GreetingScreen = ({ onDismiss }) => {
@@ -20,7 +21,8 @@ const GreetingScreen = ({ onDismiss }) => {
 
 	const dispatch = useDispatch();
 	useEffect(() => {
-		const isLoggedIn = !!JSON.parse(localStorage.getItem("loggedIn"));
+		// const isLoggedIn = !!JSON.parse(localStorage.getItem("loggedIn"));
+		const isLoggedIn = getWithExpiry("loggedIn")
 		console.log("login state", isLoggedIn);
 		// Dispatch the appropriate action based on the localStorage value
 		if (isLoggedIn) {
@@ -116,6 +118,7 @@ const GreetingScreen = ({ onDismiss }) => {
 							alt="Martin Woo"
 							className="rounded-full opacity-40 blur-md "
 							draggable={"false"}
+							priority
 						/>
 					</animated.div>
 				</div>

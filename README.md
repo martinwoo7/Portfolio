@@ -5,7 +5,7 @@ I created this website to achieve two things
 1.  Serve as my portfolio
 2.  Replicate the MacOS user experience
 
-I took inspiration (read: blatantly stole) from the latest MacOS design (I think, Monterey?) and incorporated some of my own details into it. I have always admired the simplicity of the platform and Apple's ability to make clean UIs.
+I took inspiration (read: blatantly stole) from the latest MacOS design (I think, Sonoma? With some borrowed elements from previous versions?) and incorporated some of my own details into it. I have always admired the simplicity of the platform and Apple's ability to make clean UIs.
 
 # Technologies
 

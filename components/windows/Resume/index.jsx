@@ -1,4 +1,4 @@
-import PopupWindow from "../../popupWindow";
+import { PopupWindow } from "../../popupWindow";
 import { useSpring, animated, useTransition } from "@react-spring/web";
 import { useHover } from "@use-gesture/react";
 import { useState } from "react";

@@ -8,7 +8,7 @@ const Slider = ({ purpose }) => {
 	const dispatch = useDispatch();
 	// value needs to be percentage
 	const volume = useSelector((state) => state.layout.volume);
-	const condition = purpose === "sound" ? volume : 40;
+	const condition = purpose === "sound" ? volume * 236 : 40;
 	const [value, setValue] = useState(condition);
 
 	// const springProps = useSpring({ x: valueRef.current });

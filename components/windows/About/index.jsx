@@ -1,4 +1,4 @@
-import PopupWindow from "../../popupWindow";
+import { PopupWindow } from "../../popupWindow";
 import Link from "next/link";
 import Image from "next/image";
 import face from "../../../public/images/face.jpg";
@@ -45,7 +45,7 @@ const AboutWindow = ({ name }) => {
 						width={192}
 						height={192}
 						alt="Image of the developer"
-						priority
+						// priority
 					/>
 					<div className="flex flex-col gap-2">
 						<animated.h1 className="text-4xl">

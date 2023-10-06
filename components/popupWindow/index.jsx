@@ -8,7 +8,8 @@ import { useDispatch } from "react-redux";
 import { IoMdClose, IoMdRemove } from "react-icons/io";
 import { BiExpandAlt } from "react-icons/bi";
 
-const PopupWindow = ({ children, title, name }) => {
+
+export const PopupWindow = ({ children, title, name }) => {
 	const size = 12;
 
 	const dispatch = useDispatch();
@@ -52,7 +53,7 @@ const PopupWindow = ({ children, title, name }) => {
 		},
 		// figure out how to calculate the top bounds
 		// probably something to do with the screenheight and the inital position
-		{ bounds: { top: -120} }
+		{ bounds: { top: -120 } }
 	);
 	// TODO: Pass in certain h and w depending on the menu we're rendering
 	return (
@@ -119,4 +120,3 @@ const PopupWindow = ({ children, title, name }) => {
 		</div>
 	);
 };
-export default PopupWindow;

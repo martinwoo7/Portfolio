@@ -25,7 +25,7 @@ function IconMapper({ type, size }) {
 	}
 }
 
-const ToolItem = ({ name }) => {
+const ToolItem = ({ name, className }) => {
 	const [hovering, setHovering] = useState(false);
 	const mounted = useSelector((state) => state.layout.mounted);
 	const dispatch = useDispatch()
@@ -50,7 +50,7 @@ const ToolItem = ({ name }) => {
 	});
 	return (
 		<animated.div
-			className="text-white rounded-xl p-2"
+			className={`${className} text-white rounded-xl p-2` }
 			style={hoverAnimation}
 			onClick={handleClick}
 			{...bind()}

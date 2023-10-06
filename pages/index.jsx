@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useTransition, animated } from "@react-spring/web";
 
-import PopupWindow from "../components/popupWindow";
 import AboutWindow from "../components/windows/About";
 import ResumeWindow from "../components/windows/Resume";
 import WallpaperWindow from "../components/windows/Wallpaper";
+import { PopupWindow } from "../components/popupWindow";
+import SettingsWindow from "../components/windows/SettingsWindow";
 
 const Home = () => {
 	const [position, setPosition] = useState({
@@ -18,14 +19,11 @@ const Home = () => {
 		Resume: <ResumeWindow name="Resume" />,
 		Projects: <PopupWindow title="Projects" name="Projects" />,
 		Wallpapers: <WallpaperWindow name="Wallpapers" />,
+		Settings: <SettingsWindow name="Settings"/>
 
 		// Add more items and corresponding components as needed
 	};
 
-	// useEffect(() => {
-	// 	const height = window.innerHeight;
-	// 	const width = window.innerWidth;
-	// }, [])
 	const activeWindows = useSelector((state) => state.window.opened);
 	const transitions = useTransition(activeWindows, {
 		from: { transform: "scale(1)", opacity: 1 },
@@ -35,23 +33,24 @@ const Home = () => {
 
 	return (
 		<div
-			className="rounded-b-xl overflow-hidden flex"
+			className="rounded-b-xl overflow-hidden flex relative"
 			style={{ height: position.height - 50, width: position.width - 16 }}
 		>
-			{transitions((props, item) => {
+			{/* {transitions((props, item) => {
 				const componentToRender = componentMapping[item];
 				return (
 					item && (
-						<animated.div style={props} className={"w-full"}>
+						<animated.div style={props} className={"w-full absolute"}>
 							{componentToRender}
 						</animated.div>
 					)
 				)
-			})}
-			{/* <animated.div className={"w-full"}>
-				<WallpaperWindow name="Wallpapers" />
-				<AboutWindow name="About" />
-			</animated.div> */}
+			})} */}
+			<animated.div className={"w-full absolute"}>
+				{/* <WallpaperWindow name="Wallpapers" /> */}
+				{/* <AboutWindow name="About" /> */}
+				<SettingsWindow name="Settings"/>
+			</animated.div>
 		</div>
 	);
 };
