@@ -7,7 +7,8 @@ export const layoutSlice = createSlice({
 		playing: false,
 		active: "",
 		volume: 0.5,
-		unlocked: true
+		unlocked: true,
+		colour: "rgb(59 130 246)",
 	},
 	reducers: {
 		mount: (state) => {
@@ -30,11 +31,21 @@ export const layoutSlice = createSlice({
 			state.volume = action.payload;
 		},
 		toggleDock: (state) => {
-			state.unlocked = !state.unlocked
-		}
+			state.unlocked = !state.unlocked;
+		},
+		setColour: (state, action) => {
+			state.colour = action.payload;
+		},
 	},
 });
 
-export const { mount, unmount, togglePlaying, handleActive, setVolume, toggleDock } =
-	layoutSlice.actions;
+export const {
+	mount,
+	unmount,
+	togglePlaying,
+	handleActive,
+	setVolume,
+	toggleDock,
+	setColour,
+} = layoutSlice.actions;
 export default layoutSlice.reducer;

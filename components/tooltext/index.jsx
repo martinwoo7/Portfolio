@@ -4,9 +4,10 @@ import { useHover } from "@use-gesture/react";
 import { IoMdHeart } from "react-icons/io";
 import { useSelector } from "react-redux";
 
-const ToolText = ({ name, onClick }) => {
+const ToolText = ({ name, onClick, icon }) => {
 	const [hovering, setHovering] = useState(false);
 	const active = useSelector((state) => state.layout.active);
+	const colour = useSelector((state) => state.layout.colour);
 	const bind = useHover(({ hovering }) => {
 		setHovering(hovering);
 	});
@@ -17,7 +18,7 @@ const ToolText = ({ name, onClick }) => {
 	});
 	return (
 		<animated.div
-			className="text-white rounded-xl p-2"
+			className="text-white rounded-lg p-1 flex items-center overflow-hidden"
 			style={{
 				...hoverAnimation,
 				...(active === name && {
@@ -27,7 +28,15 @@ const ToolText = ({ name, onClick }) => {
 			onClick={onClick}
 			{...bind()}
 		>
-			{name === "Menu" ? <IoMdHeart size={22} /> : <p>{name}</p>}
+			{icon && (
+				<div
+					style={{ backgroundColor: colour }}
+					className="w-8 h-8 p-1 rounded-md overflow-hidden flex justify-center items-center mr-4"
+				>
+					{icon}
+				</div>
+			)}
+			{name === "Menu" ? <IoMdHeart size={21} /> : <p>{name}</p>}
 		</animated.div>
 	);
 };

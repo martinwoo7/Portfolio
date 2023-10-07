@@ -220,7 +220,7 @@ const Layout = ({ children }) => {
 	}, [showContextMenu]);
 
 	return (
-		<div onContextMenu={handleContextMenu} className="h-full">
+		<div onContextMenu={handleContextMenu} className="h-screen">
 			<div
 				className="relative bg-zinc-950 flex justify-center items-center h-screen p-2 z-20"
 				onMouseMove={unlocked ? handleMouseMove : null}
@@ -258,7 +258,7 @@ const Layout = ({ children }) => {
 													item && (
 														<animated.div
 															style={style}
-															className="absolute mt-1.5 z-40 backdrop-blur-lg rounded-xl"
+															className="absolute mt-2 z-40 backdrop-blur-lg rounded-xl"
 														>
 															<ToolMenu>
 																{tab.content}

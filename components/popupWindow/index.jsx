@@ -57,7 +57,7 @@ export const PopupWindow = ({ children, title, name }) => {
 	);
 	// TODO: Pass in certain h and w depending on the menu we're rendering
 	return (
-		<div className="relative w-3/4 h-4/6">
+		<div className="relative w-3/4 h-4/6 max-width-2xl">
 			<div className="absolute inset-0 backdrop-blur-md"></div>
 			<animated.div
 				style={props}
