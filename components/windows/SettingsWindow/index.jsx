@@ -34,21 +34,29 @@ const SettingsWindow = ({ name, search = true }) => {
 			icon: <MdOutlineDesktopMac size={iconSize} />,
 		},
 		{
-			name: "AppleId",
-			content: "AppleId",
+			name: "AppleID",
+			content: "AppleID",
 			icon: <IoLogoApple size={iconSize} />,
+			disabled: true,
 		},
 		{
 			name: "Family Sharing",
 			content: "Family",
 			icon: <MdGroups2 size={iconSize} />,
+			disabled: true,
 		},
 		"",
-		{ name: "Wi-Fi", content: "Wifi", icon: <IoIosWifi size={iconSize} /> },
+		{
+			name: "Wi-Fi",
+			content: "Wifi",
+			icon: <IoIosWifi size={iconSize} />,
+			disabled: true,
+		},
 		{
 			name: "Bluetooth",
 			content: "Blue",
 			icon: <IoIosBluetooth size={iconSize} />,
+			disabled: true,
 		},
 		{
 			name: "Dock & Menu Bar",
@@ -59,11 +67,13 @@ const SettingsWindow = ({ name, search = true }) => {
 			name: "Desktop Settings",
 			content: "Desktop",
 			icon: <MdOutlineDesktopMac size={iconSize} />,
+			disabled: true,
 		},
 		{
 			name: "Notifications",
 			content: "NOtification",
 			icon: <IoIosNotifications size={iconSize} />,
+			disabled: true,
 		},
 		{ name: "Focus", content: "Focus", icon: <IoMdMoon size={iconSize} /> },
 		"",
@@ -71,16 +81,19 @@ const SettingsWindow = ({ name, search = true }) => {
 			name: "Passwords",
 			content: "Pass",
 			icon: <IoMdKey size={iconSize} />,
+			disabled: true,
 		},
 		{
 			name: "TouchID",
 			content: "Touching",
 			icon: <IoMdFingerPrint size={iconSize} />,
+			disabled: true,
 		},
 		{
 			name: "Security & Privacy",
 			content: "Sec",
 			icon: <BsFillShieldLockFill size={iconSize} />,
+			disabled: true,
 		},
 	];
 
@@ -90,7 +103,7 @@ const SettingsWindow = ({ name, search = true }) => {
 	const [topBound, setTopBound] = useState(-100);
 	const [active, setActive] = useState({
 		name: "About This Mart",
-		content: "About",
+		content: <SettingsAbout />,
 		icon: <MdOutlineDesktopMac size={iconSize} />,
 	});
 	const [position, setPosition] = useState({
@@ -152,7 +165,7 @@ const SettingsWindow = ({ name, search = true }) => {
 	return (
 		<animated.div
 			style={props}
-			className="relative w-10/12 h-4/5 text-sm max-width-2xl"
+			className="relative w-10/12 h-4/5 text-sm max-w-4xl min-w-3xl"
 			ref={componentRef}
 		>
 			<div className="absolute inset-0 backdrop-blur-md" />
@@ -210,10 +223,10 @@ const SettingsWindow = ({ name, search = true }) => {
 							</animated.div>
 						</div>
 					</div>
-					<div className="pl-4">
+					<div className="px-4">
 						{search && (
 							<input
-								className="focus:outline-none focus:ring-0 bg-zinc-800 rounded-md p-2 py-2"
+								className="focus:outline-none focus:ring-0 bg-zinc-800 rounded-md p-2 py-2 w-full"
 								placeholder="Search (disabled)"
 								disabled
 							/>
@@ -221,7 +234,7 @@ const SettingsWindow = ({ name, search = true }) => {
 					</div>
 					<div className="pl-4 h-full">
 						<Scrollbars style={{ height: "100%", width: "100%" }}>
-							<div className="flex flex-col pr-4 mt-3 gap-1">
+							<div className="flex flex-col pr-4 mt-3 gap-0.5">
 								{left.map((item, index) => {
 									if (item) {
 										return (
@@ -239,13 +252,19 @@ const SettingsWindow = ({ name, search = true }) => {
 												<ToolText
 													name={item.name}
 													icon={item.icon}
-													onClick={() =>
-														handleClick({
-															name: item.name,
-															content:
-																item.content,
-															icon: item.icon,
-														})
+													onClick={() => {
+														!item.disabled &&
+															handleClick({
+																name: item.name,
+																content:
+																	item.content,
+																icon: item.icon,
+															});
+													}}
+													disabled={
+														item.disabled
+															? true
+															: false
 													}
 												/>
 											</div>

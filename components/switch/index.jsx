@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
-const Switch = () => {
-	const [isOn, setIsOn] = useState(false);
+const Switch = ({ state = false, onToggle }) => {
+	const [isOn, setIsOn] = useState(state);
 
 	const springStyle = useSpring({
 		transform: isOn ? "translateX(80%)" : "translateX(0%)",
@@ -23,12 +23,24 @@ const Switch = () => {
 				className="w-5 h-5 bg-white rounded-full shadow-md absolute top-0.5 left-0.5"
 				style={springStyle}
 			/>
-			<input
-				type="checkbox"
-				className="w-full h-full opacity-0 cursor-pointer"
-				checked={isOn}
-				onChange={toggleSwitch}
-			/>
+			{onToggle ? (
+				<input
+					type="checkbox"
+					className="w-full h-full opacity-0 cursor-pointer"
+					checked={isOn}
+					onChange={() => {
+						onToggle();
+						toggleSwitch();
+					}}
+				/>
+			) : (
+				<input
+					type="checkbox"
+					className="w-full h-full opacity-0 cursor-pointer"
+					checked={isOn}
+					onChange={toggleSwitch}
+				/>
+			)}
 		</animated.div>
 	);
 };

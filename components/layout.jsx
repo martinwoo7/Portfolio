@@ -50,11 +50,11 @@ const GRADIENTS = [
 		src: "https://products.ls.graphics/mesh-gradients/images/12.-Tumbleweed-p-130x130q80.jpeg",
 		title: "Art",
 	},
+	null,
 	{
 		src: "https://products.ls.graphics/mesh-gradients/images/15.-Perfume_1-p-130x130q80.jpeg",
 		title: "Settings",
 	},
-	null,
 	{
 		src: "https://products.ls.graphics/mesh-gradients/images/36.-Pale-Chestnut-p-130x130q80.jpeg",
 		title: "Source",
@@ -252,7 +252,7 @@ const Layout = ({ children }) => {
 												);
 											}}
 										>
-											<ToolText name={tab.name} />
+											<ToolText name={tab.name} padding />
 											{buttonTransitions[index](
 												(style, item) =>
 													item && (

@@ -7,6 +7,7 @@ import ResumeWindow from "../components/windows/Resume";
 import WallpaperWindow from "../components/windows/Wallpaper";
 import { PopupWindow } from "../components/popupWindow";
 import SettingsWindow from "../components/windows/SettingsWindow";
+import ArtWindow from "../components/windows/Art";
 
 const Home = () => {
 	const componentMapping = {
@@ -15,31 +16,34 @@ const Home = () => {
 		Projects: <PopupWindow title="Projects" name="Projects" />,
 		Wallpapers: <WallpaperWindow name="Wallpapers" />,
 		Settings: <SettingsWindow name="Settings" />,
+		Art: <ArtWindow name="Art"/>
 
 		// Add more items and corresponding components as needed
 	};
 
 	const activeWindows = useSelector((state) => state.window.opened);
 	const transitions = useTransition(activeWindows, {
-		from: { transform: "scale(1)", opacity: 1 },
+		from: { transform: "scale(1)", opacity: 1, delay: 500 },
 		enter: { transform: "scale(1)", opacity: 1 },
 		leave: { transform: "scale(0.2)", opacity: 0 },
 	});
 
 	const props = useSpring({
 		from: { opacity: 0 },
-		to: { opacity: 1 },
-		config: { delay: 500 },
+		to: { opacity: 1, delay: 500 },
+		leave: { opacity: 0 },
 	});
 	return (
 		<div
 			className="rounded-b-xl overflow-hidden flex relative w-full h-full"
-			style={{
-				// height: window.innerHeight - 50,
-				// width: window.innerWidth - 16,
-			}}
+			style={
+				{
+					// height: window.innerHeight - 50,
+					// width: window.innerWidth - 16,
+				}
+			}
 		>
-			{/* {transitions((props, item) => {
+			{transitions((props, item) => {
 				const componentToRender = componentMapping[item];
 				return (
 					item && (
@@ -48,12 +52,12 @@ const Home = () => {
 						</animated.div>
 					)
 				)
-			})} */}
-			<animated.div className={"w-full absolute h-full"} style={props}>
-				{/* <WallpaperWindow name="Wallpapers" /> */}
-				{/* <AboutWindow name="About" /> */}
+			})}
+			{/* <animated.div className={"w-full absolute h-full"} style={props}>
+				<WallpaperWindow name="Wallpapers" />
+				<AboutWindow name="About" />
 				<SettingsWindow name="Settings" />
-			</animated.div>
+			</animated.div> */}
 		</div>
 	);
 };

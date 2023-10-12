@@ -7,9 +7,16 @@ import { IoIosPower } from "react-icons/io";
 import Tooltip from "../tooltip";
 import { useHover } from "@use-gesture/react";
 import { useSpring, animated, useTransition } from "@react-spring/web";
-import { useDispatch } from "react-redux";
-import { asyncLogin, asyncLogout, login, logout } from "./greetingSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+	asyncLogin,
+	asyncLogout,
+	login,
+	logout,
+	toggleTouch,
+} from "./greetingSlice";
 import { getWithExpiry } from "../../scripts/utils";
+import Switch from "../switch";
 
 import LoadingBar from "../loadingbar";
 const GreetingScreen = ({ onDismiss }) => {
@@ -19,16 +26,19 @@ const GreetingScreen = ({ onDismiss }) => {
 	const [inputValue, setInputValue] = useState(false);
 	const [value, setValue] = useState("");
 
+	const touch = useSelector((state) => state.greeting.touch);
 	const dispatch = useDispatch();
+
 	useEffect(() => {
 		// const isLoggedIn = !!JSON.parse(localStorage.getItem("loggedIn"));
-		const isLoggedIn = getWithExpiry("loggedIn")
+		const isLoggedIn = getWithExpiry("loggedIn");
 		console.log("login state", isLoggedIn);
 		// Dispatch the appropriate action based on the localStorage value
-		if (isLoggedIn) {
-			dispatch(login());
-			onSubmit();
-		}
+
+		// if (isLoggedIn) {
+		// 	dispatch(login());
+		// 	onSubmit();
+		// }
 	}, []);
 
 	useEffect(() => {
@@ -95,7 +105,7 @@ const GreetingScreen = ({ onDismiss }) => {
 	};
 
 	return (
-		<div className="flex h-screen p-3 bg-black">
+		<div className="flex h-screen p-3 bg-black text-zinc-300">
 			<div className="relative flex rounded-xl bg-zinc-950 h-full w-full p-3 items-center justify-center flex-col">
 				<div className="relative">
 					<Image
@@ -122,7 +132,7 @@ const GreetingScreen = ({ onDismiss }) => {
 						/>
 					</animated.div>
 				</div>
-				<h1 className="text-2xl text-zinc-300 mt-4">Martin Woo</h1>
+				<h1 className="text-2xl mt-4">Martin Woo</h1>
 				<div className="relative h-20 w-52">
 					{transitions((props, item) =>
 						item ? (
@@ -172,18 +182,29 @@ const GreetingScreen = ({ onDismiss }) => {
 								</form>
 
 								<animated.p
-									className="mt-3 text-zinc-300 w-52 text-xs"
+									className="mt-3 w-52 text-xs"
 									style={textProps}
 								>
 									Please enter the password to continue. Maybe
 									check the hint?
 								</animated.p>
+								<animated.div
+									style={textProps}
+									className="flex items-center mt-4 gap-1 p-3 rounded-md border-solid border-zinc-300 border-2"
+								>
+									<p className="text-sm">
+										Touch enabled device?
+									</p>
+									<Switch
+										state={touch}
+										onToggle={() => dispatch(toggleTouch())}
+									/>
+								</animated.div>
 							</animated.div>
 						)
 					)}
 				</div>
 				{/* log out, turn off buttons */}
-				<div></div>
 			</div>
 		</div>
 	);

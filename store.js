@@ -5,7 +5,7 @@ import windowSlice from "./components/popupWindow/windowSlice";
 
 export default configureStore({
 	reducer: {
-		login: greetingSlice,
+		greeting: greetingSlice,
 		layout: layoutSlice,
 		window: windowSlice,
 	},

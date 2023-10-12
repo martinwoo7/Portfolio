@@ -8,8 +8,7 @@ import { useDispatch } from "react-redux";
 import { IoMdClose, IoMdRemove } from "react-icons/io";
 import { BiExpandAlt } from "react-icons/bi";
 
-
-export const PopupWindow = ({ children, title, name }) => {
+export const PopupWindow = ({ children, title, name, sizing }) => {
 	const size = 12;
 
 	const dispatch = useDispatch();
@@ -57,12 +56,14 @@ export const PopupWindow = ({ children, title, name }) => {
 	);
 	// TODO: Pass in certain h and w depending on the menu we're rendering
 	return (
-		<div className="relative w-3/4 h-4/6 max-width-2xl">
-			<div className="absolute inset-0 backdrop-blur-md"></div>
-			<animated.div
-				style={props}
-				className="text-white rounded-xl bg-black/10 w-full h-full pt-2"
-			>
+		<animated.div
+			style={props}
+			className={`relative ${
+				sizing === "sm" ? "w-1/2" : sizing === "lg" ? "w-11/12" : "w-3/4"
+			}   h-4/6 max-w-4xl min-w-2xl rounded-xl`}
+		>
+			<div className="absolute inset-0 backdrop-blur-md rounded-xl" />
+			<animated.div className="relative text-white rounded-xl bg-black/10 w-full h-full pt-2">
 				<div
 					className="flex items-center mb-1"
 					id="top-part"
@@ -115,8 +116,13 @@ export const PopupWindow = ({ children, title, name }) => {
 						</div>
 					)}
 				</div>
-				{children}
+				<div
+					style={{ height: `calc(100% - 33px)` }}
+					className="rounded-b-xl"
+				>
+					{children}
+				</div>
 			</animated.div>
-		</div>
+		</animated.div>
 	);
 };
