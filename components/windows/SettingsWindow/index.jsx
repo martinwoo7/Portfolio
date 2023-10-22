@@ -133,7 +133,10 @@ const SettingsWindow = ({ name, search = true }) => {
 	};
 
 	const opacityProps = useSpring({ opacity: hover ? 1 : 0 });
-	const scaleProps = useSpring({ scale: hover ? 1.1 : 1 });
+	const scaleProps = useSpring({
+		scale: hover ? 1.1 : 1,
+		transform: hover ? "translateZ(1px)" : "translateZ(0px)",
+	});
 	const bind = useHover(({ hovering }) => {
 		console.log(hovering);
 		setHover(hovering);

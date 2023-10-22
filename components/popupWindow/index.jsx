@@ -23,7 +23,10 @@ export const PopupWindow = ({ children, title, name, sizing }) => {
 	});
 
 	const opacityProps = useSpring({ opacity: hover ? 1 : 0 });
-	const scaleProps = useSpring({ scale: hover ? 1.1 : 1 });
+	const scaleProps = useSpring({
+		scale: hover ? 1.1 : 1,
+		transform: hover ? "translateZ(1px)" : "translateZ(0px)",
+	});
 	const bind = useHover(({ hovering }) => {
 		console.log(hovering);
 		setHover(hovering);
@@ -59,7 +62,11 @@ export const PopupWindow = ({ children, title, name, sizing }) => {
 		<animated.div
 			style={props}
 			className={`relative ${
-				sizing === "sm" ? "w-1/2" : sizing === "lg" ? "w-11/12" : "w-3/4"
+				sizing === "sm"
+					? "w-1/2"
+					: sizing === "lg"
+					? "w-11/12"
+					: "w-3/4"
 			}   h-4/6 max-w-4xl min-w-2xl rounded-xl`}
 		>
 			<div className="absolute inset-0 backdrop-blur-md rounded-xl" />

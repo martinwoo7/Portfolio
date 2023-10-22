@@ -23,3 +23,8 @@ I have several things planned to slowly rollout
 
 1. at certain breakpoints, change from a Mac screen, then to an Ipad screen, then finally to an Iphone
 2. I dunno, something else?
+
+# Notes
+
+1. Backdrop blur bug with Firefox (https://bugzilla.mozilla.org/show_bug.cgi?id=1803813)
+2. Scale animations require a small translateZ property to work properly in Firefox

@@ -76,7 +76,7 @@ const ArtWindow = ({ name }) => {
 			<div className="w-full h-full relative flex bg-zinc-800 rounded-b-xl">
 				<div
 					ref={ref}
-					className="rounded-xl relative w-4/6 h-full overflow-hidden rounded-bl-xl"
+					className="rounded-xl relative w-4/6 h-full overflow-hidden"
 				>
 					{props.map(({ x, display, scale }, i) => (
 						<animated.div
@@ -92,7 +92,7 @@ const ArtWindow = ({ name }) => {
 									scale,
 								}}
 							>
-								<div className="relative rounded-xl overflow-hidden my-6 mx-3">
+								<div className="relative rounded-xl overflow-hidden my-6 mx-3 flex justify-center">
 									<Image
 										src={pages[i]}
 										alt={about.alt}
@@ -104,6 +104,7 @@ const ArtWindow = ({ name }) => {
 											width: "auto",
 											pointerEvents: "none",
 										}}
+										className="rounded-xl"
 									/>
 								</div>
 							</animated.div>

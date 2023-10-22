@@ -10,7 +10,7 @@ import { IoLogoGithub, IoLogoLinkedin } from "react-icons/io";
 
 export const LogoContainer = ({ children }) => {
 	const [hover, setHover] = useState(false);
-	const props = useSpring({ scale: hover ? 1.1 : 1 });
+	const props = useSpring({ scale: hover ? 1.1 : 1, transform: hover ? "translateZ(1px)" : "translateZ(0px)"});
 	const bind = useHover(({ hovering }) => {
 		setHover(hovering);
 	});

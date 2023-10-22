@@ -7,17 +7,18 @@ const Clickable = ({ text, onClick }) => {
 	const [clicked, setClicked] = useState(false);
 	const [props, setScale] = useSpring(() => ({
 		scale: 1,
-        backgroundColor: "rgb(63, 63, 70)"
+		transform: 0,
+		backgroundColor: "rgb(63, 63, 70)",
 	}));
 
 	// Create gesture handlers
 	const bind = useGesture({
 		onMouseEnter: () => {
-			setScale({ scale: 1.05 });
+			setScale({ scale: 1.05, translateZ: 1 });
 		},
 		onMouseLeave: () => {
 			if (!clicked) {
-				setScale({ scale: 1 });
+				setScale({ scale: 1, translateZ: 0 });
 			}
 		},
 		onClick: () => {
@@ -29,7 +30,7 @@ const Clickable = ({ text, onClick }) => {
 			setTimeout(() => {
 				setClicked(false);
 				setScale({ scale: 1 });
-                onClick()
+				onClick();
 			}, 150);
 		},
 	});
@@ -38,7 +39,9 @@ const Clickable = ({ text, onClick }) => {
 		<animated.button
 			{...bind()}
 			style={{
-				transform: props.scale.to((s) => `scale(${s})`),
+				transform: `${props.scale.to(
+					(s) => `scale(${s})`
+				)} ${props.transform.to((t) => `translateZ(${t}px)`)}`,
 				background: props.backgroundColor,
 				cursor: "pointer",
 			}}
