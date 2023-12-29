@@ -3,9 +3,8 @@ import { useSprings, animated } from "@react-spring/web";
 import { clamp } from "lodash";
 import { useDrag } from "@use-gesture/react";
 import Image from "next/image";
-
 import { PopupWindow } from "../../popupWindow";
-import useMeasure from "react-use-measure";
+import MobileBar from "../../mobileBar";
 
 const pages = ["/images/disney.png", "/images/album.png", "/images/card.png"];
 
@@ -29,8 +28,8 @@ const content = [
 		title: "Ticket to Discounts",
 		content:
 			"I made this design for my university culture club's membership card. \
-            The card was made of a translucent plastic, which replaces all the white. \
-            This is a joke on the famous Hong Kong 'pineapple bun' - what even is it? Is there pineapple in it? ",
+            The card was made of a translucent plastic. \
+            This is a joke on the famous Hong Kong 'pineapple bun'.",
 		alt: "Painting of a membership card ",
 		date: "2020 | Adobe Photoshop",
 	},
@@ -40,7 +39,11 @@ const ArtWindow = ({ name }) => {
 	const index = useRef(0);
 	const [about, setAbout] = useState(content[index.current]);
 
-	const [ref, { width }] = useMeasure();
+	// is there a way to delay the use measure?
+	const [width, setWidth] = useState(0);
+	useEffect(() => {
+		setWidth(window.innerWidth);
+	}, []);
 	const [props, api] = useSprings(
 		pages.length,
 		(i) => ({
@@ -73,11 +76,9 @@ const ArtWindow = ({ name }) => {
 
 	return (
 		<PopupWindow title="Art" name={name} sizing="lg">
-			<div className="w-full h-full relative flex bg-zinc-800 rounded-b-xl">
-				<div
-					ref={ref}
-					className="rounded-xl relative w-4/6 h-full overflow-hidden"
-				>
+			<div className="w-full h-full relative flex flex-col md:flex-row bg-zinc-800 rounded-b-xl md:pt-0">
+				<MobileBar colour={"bg-zinc-800"} />
+				<div className="rounded-xl relative w-full md:w-4/6 h-full overflow-hidden">
 					{props.map(({ x, display, scale }, i) => (
 						<animated.div
 							{...bind()}
@@ -111,10 +112,12 @@ const ArtWindow = ({ name }) => {
 						</animated.div>
 					))}
 				</div>
-				<div className="w-2/6 h-full relative z-20 flex flex-col p-3 pr-5 gap-2">
-					<h1 className="text-3xl">{about.title}</h1>
-					<p className="text-lg mx-3">{about.date}</p>
-					<p className="mx-3 mt-6">{about.content}</p>
+				<div className="w-full md:w-2/6 h-full relative z-20 flex flex-col p-3 px-8 md:pr-5 gap-2">
+					<div className="bg-zinc-900 p-5 h-full rounded-xl">
+						<h1 className="text-3xl">{about.title}</h1>
+						<p className="text-lg md:mx-3">{about.date}</p>
+						<p className="md:mx-3 mt-6">{about.content}</p>
+					</div>
 				</div>
 			</div>
 		</PopupWindow>

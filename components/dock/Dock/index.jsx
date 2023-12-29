@@ -13,7 +13,7 @@ import { useWindowResize } from "../hooks/useWindowResize";
 import styles from "../../../styles/Dock.module.css";
 export const DOCK_ZOOM_LIMIT = [-100, 50];
 
-export const Dock = ({ children }) => {
+export const Dock = ({ children, flat }) => {
 	const [activeCard, setActiveCard] = useState(null);
 	const [hovered, setHovered] = useState(false);
 	const [width, setWidth] = useState(0);
@@ -47,28 +47,38 @@ export const Dock = ({ children }) => {
 				setActiveCard,
 			}}
 		>
-			<animated.div
-				ref={dockRef}
-				className={styles.dock}
-				onMouseOver={() => {
-					if (!isZooming.current) {
-						setHovered(true);
-					}
-				}}
-				onMouseOut={() => {
-					setHovered(false);
-				}}
-				style={{
-					scale: zoomLevel
-						.to({
-							range: [DOCK_ZOOM_LIMIT[0], 1, DOCK_ZOOM_LIMIT[1]],
-							output: [2, 1, 0.5],
-						})
-						.to((value) => clamp(0.5, 2, value)),
-				}}
-			>
-				{children}
-			</animated.div>
+			{!flat ? (
+				<animated.div
+					ref={dockRef}
+					className={[styles.dock, 'items-end'].join(' ')}
+					onMouseOver={() => {
+						if (!isZooming.current) {
+							setHovered(true);
+						}
+					}}
+					onMouseOut={() => {
+						setHovered(false);
+					}}
+					style={{
+						scale: zoomLevel
+							.to({
+								range: [
+									DOCK_ZOOM_LIMIT[0],
+									1,
+									DOCK_ZOOM_LIMIT[1],
+								],
+								output: [2, 1, 0.5],
+							})
+							.to((value) => clamp(0.5, 2, value)),
+					}}
+				>
+					{children}
+				</animated.div>
+			) : (
+				<animated.div ref={dockRef} className={styles.dock}>
+					{children}
+				</animated.div>
+			)}
 		</DockContext.Provider>
 	);
 };

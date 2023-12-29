@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useSpring, animated, useTransition } from "@react-spring/web";
 import { useHover, useDrag } from "@use-gesture/react";
 import Scrollbars from "react-custom-scrollbars-2";
+import { toggleMobile } from "../../layoutSlice";
 
 import {
 	IoMdClose,
@@ -17,12 +18,19 @@ import {
 	IoMdFingerPrint,
 } from "react-icons/io";
 import { BiExpandAlt } from "react-icons/bi";
-import { MdOutlineDesktopMac, MdGroups2 } from "react-icons/md";
+import {
+	MdOutlineDesktopMac,
+	MdGroups2,
+	MdFace,
+	MdFace2,
+} from "react-icons/md";
 import { BsWindowDock, BsFillShieldLockFill } from "react-icons/bs";
 
 import HorizontalLine from "../../horizontal";
 import ToolText from "../../tooltext";
 import SettingsAbout from "./About";
+import Pressable from "../../pressable";
+import MobileBar from "../../mobileBar";
 
 const SettingsWindow = ({ name, search = true }) => {
 	const size = 12;
@@ -113,20 +121,20 @@ const SettingsWindow = ({ name, search = true }) => {
 	useEffect(() => {
 		const element = componentRef.current;
 
-		if (element) {
-			const width = element.clientWidth;
-			const height = element.clientHeight;
+		// if (element) {
+		// 	const width = element.clientWidth;
+		// 	const height = element.clientHeight;
 
-			console.log(`Width: ${width}px`);
-			console.log(`Height: ${height}px`);
-			setPosition({
-				x: (window.innerWidth - width) / 2,
-				y: (window.innerHeight - height) / 2,
-			});
-			const temp = (window.innerHeight - height) / 2;
-			// console.log(-temp);
-			setTopBound(-temp);
-		}
+		// 	console.log(`Width: ${width}px`);
+		// 	console.log(`Height: ${height}px`);
+		// 	setPosition({
+		// 		x: (window.innerWidth - width) / 2,
+		// 		y: (window.innerHeight - height) / 2,
+		// 	});
+		// 	const temp = (window.innerHeight - height) / 2;
+		// 	// console.log(-temp);
+		// 	setTopBound(-temp);
+		// }
 	}, []);
 	const handleClick = (item) => {
 		setActive(item);
@@ -167,18 +175,19 @@ const SettingsWindow = ({ name, search = true }) => {
 
 	return (
 		<animated.div
-			style={props}
-			className="relative w-10/12 h-4/5 text-sm max-w-4xl min-w-3xl"
+			style={window.innerWidth < window.innerHeight ? null : props}
+			className="relative w-full md:w-10/12 h-full md:h-4/5 text-sm max-w-4xl min-w-3xl"
 			ref={componentRef}
 		>
-			<div className="absolute inset-0 backdrop-blur-md" />
+			<div className="hidden md:absolute inset-0 backdrop-blur-md" />
 			<animated.div className="text-white rounded-xl w-full h-full flex relative ">
 				<div
 					id="left"
-					className="bg-zinc-900/70 w-5/12 flex flex-col rounded-l-xl pb-4 gap-2"
+					className="bg-zinc-900 md:bg-zinc-900/70 w-full md:w-5/12 flex flex-col rounded-l-xl pb-4 gap-2"
 				>
+					<MobileBar colour={"bg-zinc-900"} />
 					<div
-						className="w-full pt-4 pb-7 pl-4 rounded-tl-xl relative"
+						className="hidden md:flex w-full pt-4 pb-7 pl-4 rounded-tl-xl relative"
 						{...dragBind()}
 						style={{ touchAction: "none" }}
 					>
@@ -226,6 +235,9 @@ const SettingsWindow = ({ name, search = true }) => {
 							</animated.div>
 						</div>
 					</div>
+					<div className="flex md:hidden px-4 mt-6">
+						<p className="text-3xl">Settings</p>
+					</div>
 					<div className="px-4">
 						{search && (
 							<input
@@ -238,6 +250,33 @@ const SettingsWindow = ({ name, search = true }) => {
 					<div className="pl-4 h-full">
 						<Scrollbars style={{ height: "100%", width: "100%" }}>
 							<div className="flex flex-col pr-4 mt-3 gap-0.5">
+								<div className="bg-zinc-800 rounded-lg md:hidden">
+									<div className="flex items-center gap-2 px-2 py-1">
+										<div>
+											<MdFace
+												size={46}
+												className="text-pink-300"
+											/>
+										</div>
+										<div className="flex flex-col">
+											<p>Martin Woo</p>
+											<p>
+												Mart ID, iMart+, Media &
+												Purchases
+											</p>
+										</div>
+									</div>
+									<HorizontalLine className={"border-zinc-900"}/>
+									<div className="flex items-center gap-7 px-2 py-1">
+										<div>
+											<MdFace2
+												size={26}
+												className="text-blue-300"
+											/>
+										</div>
+										<p>Family</p>
+									</div>
+								</div>
 								{left.map((item, index) => {
 									if (item) {
 										return (
@@ -287,7 +326,7 @@ const SettingsWindow = ({ name, search = true }) => {
 				</div>
 				<div
 					id="right"
-					className="bg-zinc-800 w-full rounded-r-xl flex flex-col pb-4 px-8"
+					className="hidden bg-zinc-800 w-full rounded-r-xl md:flex flex-col pb-4 px-8"
 				>
 					<div
 						className="w-full pt-4 rounded-tr-xl pl-4 h-10"
@@ -301,6 +340,18 @@ const SettingsWindow = ({ name, search = true }) => {
 					))} */}
 					{active ? active.content : null}
 				</div>
+				<Pressable
+					onClick={() => {
+						console.log("Closing ", name);
+						dispatch(closeWindow(name));
+						dispatch(toggleMobile());
+					}}
+					classes={
+						"absolute right-5 bottom-5 p-2 bg-white rounded-full z-20 md:hidden"
+					}
+				>
+					<IoMdClose size={24} className="text-black" />
+				</Pressable>
 			</animated.div>
 		</animated.div>
 	);

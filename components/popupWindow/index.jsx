@@ -1,25 +1,26 @@
-import { useState, useEffect } from "react";
-import { useDrag, useHover } from "@use-gesture/react";
+import { useState, useEffect, useRef } from "react";
+import { useDrag, useGesture, useHover } from "@use-gesture/react";
 import { useSpring, animated } from "@react-spring/web";
 import { closeWindow } from "./windowSlice";
-
+import { toggleMobile } from "../layoutSlice";
+import Pressable from "../pressable";
 import { useDispatch } from "react-redux";
-
+// import RealTimeDate from "../realtime";
+// import ToolItem from "../toolitem";
+// import MobileBar from "../mobileBar";
+import useMeasure from "react-use-measure";
 import { IoMdClose, IoMdRemove } from "react-icons/io";
 import { BiExpandAlt } from "react-icons/bi";
 
 export const PopupWindow = ({ children, title, name, sizing }) => {
 	const size = 12;
-
 	const dispatch = useDispatch();
+	const [dimensions, setDimensions] = useState(null);
 	const [hover, setHover] = useState(false);
-	// const [position, setPosition] = useState({
-	// 	x: (window.innerWidth - 700) / 2,
-	// 	y: (window.innerHeight - 700) / 2,
-	// });
+	const [mobile, setMobile] = useState(false);
 	const [position, setPosition] = useState({
-		x: (window.innerWidth - 700) / 2,
-		y: (window.innerHeight - 700) / 2,
+		x: 0,
+		y: 0,
 	});
 
 	const opacityProps = useSpring({ opacity: hover ? 1 : 0 });
@@ -32,47 +33,83 @@ export const PopupWindow = ({ children, title, name, sizing }) => {
 		setHover(hovering);
 	});
 
-	// useEffect(() => {
-	// 	const screenWidth = window.innerWidth;
-	// 	const screenHeight = window.innerHeight;
-	// 	const initialX = (screenWidth - 400) / 2; // Adjust 400 to your desired window width
-	// 	const initialY = (screenHeight - 400) / 2; // Adjust 400 to your desired window height
-	// 	setPosition({ x: initialX, y: initialY });
-	// }, []);
+	const rectRef = useRef();
+	useEffect(() => {
+		const screenWidth = window.innerWidth;
+		const screenHeight = window.innerHeight;
+		if (screenWidth < screenHeight) {
+			setMobile(true);
+		}
+		setTimeout(() => {
+			const rect = rectRef.current.getBoundingClientRect();
+			console.log(rect);
+			setDimensions(rect);
+		}, 500);
 
-	const props = useSpring({ x: position.x, y: position.y });
+		// setDimensions(rect.)
+	}, []);
+
+	useEffect(() => {
+		const handleResize = () => {
+			// setWindowWidth(window.innerWidth);
+			const rect = rectRef.current.getBoundingClientRect();
+			console.log(rect);
+			setDimensions(rect);
+		};
+
+		// Attach the event listener
+		window.addEventListener("resize", handleResize);
+
+		// Call the event handler initially to set the initial window width
+		handleResize();
+
+		// Detach the event listener on component unmount
+		return () => {
+			window.removeEventListener("resize", handleResize);
+		};
+	}, []);
+
+	const [props, set] = useSpring(() => ({ x: position.x, y: position.y }));
 	const dragBind = useDrag(
-		({ down, movement: [x, y] }) => {
-			const newX = position.x + x;
-			const newY = position.y + y;
+		({ down, movement: [mx, my], offset: [x, y] }) => {
+			const newX = position.x + mx;
+			const newY = position.y + my;
 
+			const maxY = (window.innerHeight - dimensions.height - 60) / -2;
+			console.log(maxY);
 			if (!down) {
-				setPosition({ x: newX, y: newY });
+				if (newY < maxY) {
+					setPosition({ x: newX, y: maxY });
+				} else {
+					setPosition({ x: newX, y: newY });
+				}
 			} else {
-				props.x.start(newX);
-				props.y.start(newY);
+				set({ x: newX, y: newY < maxY ? maxY : newY });
 			}
-		},
+			// Ensure the component stays within the bounds
+		}
+
 		// figure out how to calculate the top bounds
 		// probably something to do with the screenheight and the inital position
-		{ bounds: { top: -120 } }
 	);
 	// TODO: Pass in certain h and w depending on the menu we're rendering
+
 	return (
 		<animated.div
-			style={props}
-			className={`relative ${
+			ref={rectRef}
+			style={!mobile ? props : null}
+			className={`w-full md:relative ${
 				sizing === "sm"
 					? "w-1/2"
 					: sizing === "lg"
 					? "w-11/12"
 					: "w-3/4"
-			}   h-4/6 max-w-4xl min-w-2xl rounded-xl`}
+			}   h-full md:h-4/6 max-w-4xl min-w-2xl md:rounded-xl z-12 bg-slate-900 md:bg-transparent`}
 		>
-			<div className="absolute inset-0 backdrop-blur-md rounded-xl" />
-			<animated.div className="relative text-white rounded-xl bg-black/10 w-full h-full pt-2">
+			<div className="hidden md:absolute md:inset-0 md:backdrop-blur-md rounded-xl" />
+			<animated.div className="relative text-white rounded-xl md:bg-black/10 w-full h-full md:pt-2">
 				<div
-					className="flex items-center mb-1"
+					className="hidden md:flex items-center mb-1 mt-10 md:mt-0"
 					id="top-part"
 					{...dragBind()}
 					style={{ touchAction: "none" }}
@@ -88,6 +125,7 @@ export const PopupWindow = ({ children, title, name, sizing }) => {
 							onClick={() => {
 								console.log("Closing ", name);
 								dispatch(closeWindow(name));
+								dispatch(toggleMobile());
 							}}
 						>
 							<animated.div style={opacityProps}>
@@ -124,11 +162,29 @@ export const PopupWindow = ({ children, title, name, sizing }) => {
 					)}
 				</div>
 				<div
-					style={{ height: `calc(100% - 33px)` }}
-					className="rounded-b-xl"
+					style={
+						mobile
+							? { height: "100%" }
+							: { height: `calc(100% - 33px)` }
+					}
+					className="md:rounded-b-xl"
 				>
+					{/* <MobileBar colour={"bg-zinc-800"}/> */}
 					{children}
 				</div>
+				{/* floating close button */}
+				<Pressable
+					onClick={() => {
+						console.log("Closing ", name);
+						dispatch(closeWindow(name));
+						dispatch(toggleMobile());
+					}}
+					classes={
+						"absolute right-5 bottom-5 p-2 bg-white rounded-full z-20 md:hidden"
+					}
+				>
+					<IoMdClose size={24} className="text-black" />
+				</Pressable>
 			</animated.div>
 		</animated.div>
 	);

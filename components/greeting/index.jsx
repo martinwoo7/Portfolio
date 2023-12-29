@@ -188,7 +188,7 @@ const GreetingScreen = ({ onDismiss }) => {
 									Please enter the password to continue. Maybe
 									check the hint?
 								</animated.p>
-								<animated.div
+								{/* <animated.div
 									style={textProps}
 									className="flex items-center mt-4 gap-1 p-3 rounded-md border-solid border-zinc-300 border-2"
 								>
@@ -199,7 +199,7 @@ const GreetingScreen = ({ onDismiss }) => {
 										state={touch}
 										onToggle={() => dispatch(toggleTouch())}
 									/>
-								</animated.div>
+								</animated.div> */}
 							</animated.div>
 						)
 					)}

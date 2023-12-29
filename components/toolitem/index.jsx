@@ -5,6 +5,7 @@ import {
 	IoIosSearch,
 	IoIosSwitch,
 } from "react-icons/io";
+import { IoCellular } from "react-icons/io5";
 import { useSpring, animated, config } from "@react-spring/web";
 import { useHover } from "@use-gesture/react";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,26 +21,28 @@ function IconMapper({ type, size }) {
 			return <IoIosSearch className="text-white" size={size} />;
 		case "Tool":
 			return <IoIosSwitch className="text-white" size={size} />;
+		case "Cell":
+			return <IoCellular className="text-white" size={size} />;
 		default:
 			return null;
 	}
 }
 
-const ToolItem = ({ name, className }) => {
+const ToolItem = ({ name, className, size=18 }) => {
 	const [hovering, setHovering] = useState(false);
 	const mounted = useSelector((state) => state.layout.mounted);
-	const dispatch = useDispatch()
+	const dispatch = useDispatch();
 
 	const bind = useHover(({ hovering }) => {
 		setHovering(hovering);
 	});
 
 	const handleClick = () => {
-		if (name === 'Tool') {
+		if (name === "Tool") {
 			if (mounted) {
-				dispatch(unmount())
+				dispatch(unmount());
 			} else {
-				dispatch(mount())
+				dispatch(mount());
 			}
 		}
 	};
@@ -50,12 +53,12 @@ const ToolItem = ({ name, className }) => {
 	});
 	return (
 		<animated.div
-			className={`${className} text-white rounded-xl p-2` }
+			className={`${className} text-white rounded-xl p-2`}
 			style={hoverAnimation}
 			onClick={handleClick}
 			{...bind()}
 		>
-			<IconMapper type={name} size={18} />
+			<IconMapper type={name} size={size} />
 		</animated.div>
 	);
 };

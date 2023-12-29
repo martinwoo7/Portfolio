@@ -9,6 +9,7 @@ export const layoutSlice = createSlice({
 		volume: 0.5,
 		unlocked: true,
 		colour: "rgb(59 130 246)",
+		mobile: true,
 	},
 	reducers: {
 		mount: (state) => {
@@ -36,6 +37,9 @@ export const layoutSlice = createSlice({
 		setColour: (state, action) => {
 			state.colour = action.payload;
 		},
+		toggleMobile: (state) => {
+			state.mobile = !state.mobile;
+		},
 	},
 });
 
@@ -47,5 +51,6 @@ export const {
 	setVolume,
 	toggleDock,
 	setColour,
+	toggleMobile,
 } = layoutSlice.actions;
 export default layoutSlice.reducer;

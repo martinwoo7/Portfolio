@@ -13,12 +13,16 @@ const RealTimeDate = ({ type }) => {
 
 	if (type === "date") {
 		return (
-			<div className="text-white text-sm">{currentTime.format("ddd MMM YY")}</div>
+			<div className="text-white text-md">{currentTime.format("ddd MMM YY")}</div>
 		);
 	} else if (type === "time") {
 		return (
-			<div className="text-white text-sm">{currentTime.format("h[:]mm a")}</div>
+			<div className="text-white text-md">{currentTime.format("h[:]mm a")}</div>
 		);
+	} else if (type === "phone") {
+		return (
+			<div className="text-white text-md">{currentTime.format("h[:]mm")}</div>
+		)
 	}
 };
 

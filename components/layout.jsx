@@ -5,8 +5,18 @@ import { DockDivider } from "./dock/DockDivider";
 import { Card } from "./dock/Card";
 import { useSpring, animated, useTransition } from "@react-spring/web";
 import { useDispatch, useSelector } from "react-redux";
-import { handleActive, unmount } from "./layoutSlice";
-import { togglePlaying } from "./layoutSlice";
+
+import { IoMdPerson } from "react-icons/io";
+import { FaPaintBrush } from "react-icons/fa";
+import { IoBriefcase } from "react-icons/io5";
+import { FaSheetPlastic } from "react-icons/fa6";
+
+import {
+	handleActive,
+	unmount,
+	togglePlaying,
+	toggleMobile,
+} from "./layoutSlice";
 
 import moment from "moment/moment";
 import ReactPlayer from "react-player";
@@ -117,11 +127,16 @@ const Layout = ({ children }) => {
 	const volume = useSelector((state) => state.layout.volume);
 	const active = useSelector((state) => state.layout.active);
 	const unlocked = useSelector((state) => state.layout.unlocked);
+	// const [mobileDock, setMobileDock] = useState(true);
+	const mobileDock = useSelector((state) => state.layout.mobile);
 
 	const dispatch = useDispatch();
 
 	const dockStyle = useSpring({
 		transform: dockVisible ? "translateY(0%)" : "translateY(80%)",
+	});
+	const mobileDockStyle = useSpring({
+		transform: mobileDock ? "translateY(0%)" : "translateY(120%)",
 	});
 
 	const getButtonTransitions = (buttonName) => {
@@ -185,6 +200,10 @@ const Layout = ({ children }) => {
 	}, [unlocked]);
 
 	useEffect(() => {
+		// mobile dock effect
+	}, []);
+
+	useEffect(() => {
 		const handleOutsideClick = (event) => {
 			// console.log(!event.target.closest(".menu-container"))
 			if (active && !event.target.closest(".menu-container")) {
@@ -219,6 +238,9 @@ const Layout = ({ children }) => {
 		};
 	}, [showContextMenu]);
 
+	const source =
+		"https://products.ls.graphics/mesh-gradients/images/15.-Perfume_1.jpg";
+
 	return (
 		<div onContextMenu={handleContextMenu} className="h-screen">
 			<div
@@ -236,10 +258,10 @@ const Layout = ({ children }) => {
 					// 	backgroundSize: "cover",
 					// 	backgroundRepeat: "no-repeat",
 					// }}
-					className="overflow-hidden bg-gradient-to-r from-purple-500 to-pink-500 flex flex-col relative rounded-2xl h-full w-full z-20"
+					className="relative overflow-hidden bg-gradient-to-r from-purple-500 to-pink-500 flex flex-col relative rounded-2xl md:rounded-2xl h-full w-full z-20"
 				>
-					<div className="flex w-full h-10 bg-black/20 justify-between items-center px-3">
-						<div className="flex gap-2 items-center">
+					<div className="flex w-full h-10 md:bg-black/20 justify-between items-center pt-2 md:pt-0 pl-5 pr-2 md:px-3 z-10">
+						<div className="hidden md:flex gap-2 items-center">
 							{buttonData.map((tab, index) => {
 								return (
 									<Fragment key={index}>
@@ -271,6 +293,9 @@ const Layout = ({ children }) => {
 								);
 							})}
 						</div>
+						<div className="flex pl-3 md:hidden">
+							<RealTimeDate type={"phone"} />
+						</div>
 						<div className="w-14 h-5">
 							<ReactPlayer
 								url={"audio/spider.flac"}
@@ -281,7 +306,7 @@ const Layout = ({ children }) => {
 								onEnded={() => dispatch(togglePlaying())}
 							/>
 						</div>
-						<div className="flex gap-2 items-center">
+						<div className="hidden md:flex gap-2 items-center">
 							{right.map((tab, index) => {
 								if (tab.type === "icon") {
 									if (tab.name === "Tool") {
@@ -317,6 +342,11 @@ const Layout = ({ children }) => {
 								}
 							})}
 						</div>
+						<div className="flex md:hidden">
+							<ToolItem name={"Cell"} size={17} />
+							<ToolItem name={"Wifi"} size={17} />
+							<ToolItem name={"Battery"} size={17} />
+						</div>
 					</div>
 
 					{menuTransitions(
@@ -330,12 +360,14 @@ const Layout = ({ children }) => {
 								</animated.div>
 							)
 					)}
-
-					{children}
+					<div className="h-full absolute md:relative w-full">
+						{children}
+					</div>
+					<div className="h-full md:hidden" />
 
 					<animated.div
 						className={
-							"absolute flex bottom-1 w-full justify-center flex-col items-center z-10"
+							"hidden sm:flex absolute bottom-1 w-full justify-center flex-col items-center z-10"
 						}
 						style={dockStyle}
 					>
@@ -364,6 +396,66 @@ const Layout = ({ children }) => {
 								)}
 							</Dock>
 						</div>
+					</animated.div>
+
+					<animated.div
+						className={
+							"flex sm:hidden w-full justify-content flex-col items-center z-10 mb-2 sm:mb-0"
+						}
+						style={mobileDockStyle}
+					>
+						<Dock flat>
+							<DockCard value={"About"} src={source} flat>
+								<div className="flex justify-center">
+									<IoMdPerson
+										className="text-white"
+										size={36}
+									/>
+								</div>
+							</DockCard>
+							<DockCard
+								value={"Art"}
+								src={
+									"https://products.ls.graphics/mesh-gradients/images/23.-California_1.jpg"
+								}
+								flat
+							>
+								<div className="flex justify-center">
+									<FaPaintBrush
+										className="text-white"
+										size={32}
+									/>
+								</div>
+							</DockCard>
+							<DockCard
+								value={"Projects"}
+								src={
+									"https://products.ls.graphics/mesh-gradients/images/100.-Chetwode-Blue.jpg"
+								}
+								flat
+							>
+								<div className="flex justify-center">
+									<IoBriefcase
+										className="text-white"
+										size={32}
+									/>
+								</div>
+							</DockCard>
+							<DockCard
+								value={"Resume"}
+								src={
+									"https://products.ls.graphics/mesh-gradients/images/30.-Wild-Rice_1.jpg"
+								}
+								flat
+							>
+								<div className="flex justify-center">
+									<FaSheetPlastic
+										className="text-white"
+										size={32}
+									/>
+								</div>
+							</DockCard>
+						</Dock>
 					</animated.div>
 					{showContextMenu && (
 						<ContextMenu

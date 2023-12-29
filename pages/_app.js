@@ -1,11 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "../components/layout";
 import "../styles/globals.css";
 import { useTransition, animated } from "@react-spring/web";
 import { Provider } from "react-redux";
 import store from "../store";
+import Head from "next/head";
 
 import GreetingScreen from "../components/greeting";
+import LockOrientation from "../components/lockOrientation/LockOrientation";
+
+import Clock from "../components/clock";
 
 const MyApp = ({ Component, pageProps }) => {
 	const [showGreeting, setShowGreeting] = useState(true);
@@ -25,6 +29,13 @@ const MyApp = ({ Component, pageProps }) => {
 
 	return (
 		<Provider store={store}>
+			<Head>
+				<meta
+					name="viewport"
+					content="initial-scale=1, maximum-scale=1, user-scalable=no, orientation=portrait"
+				/>
+			</Head>
+			<LockOrientation />
 			{transitions((props, item) =>
 				item ? (
 					<animated.div style={props}>
@@ -34,13 +45,16 @@ const MyApp = ({ Component, pageProps }) => {
 					</animated.div>
 				) : (
 					<animated.div>
-						{/* No animation for Layout */}
+			
 						<Layout>
 							<Component {...pageProps} />
 						</Layout>
 					</animated.div>
 				)
 			)}
+
+			{/* Test Environment */}
+			{/* <Clock /> */}
 		</Provider>
 	);
 };

@@ -4,6 +4,7 @@ import {
 	openWindow,
 	closeWindow,
 } from "../../popupWindow/windowSlice";
+import { toggleMobile } from "../../layoutSlice";
 import {
 	animated,
 	useIsomorphicLayoutEffect,
@@ -19,9 +20,9 @@ import { useMousePosition } from "../hooks/useMousePosition";
 import { useDock } from "../Dock/DockContext";
 import styles from "../../../styles/Dock.module.css";
 import { useDispatch, useSelector } from "react-redux";
-const INITIAL_WIDTH = 48;
+const INITIAL_WIDTH = 52;
 
-export const DockCard = ({ children, value, src }) => {
+export const DockCard = ({ children, value, src, flat }) => {
 	const dispatch = useDispatch();
 	const cardRef = useRef(null);
 	const [elCenterX, setElCenterX] = useState(0);
@@ -40,8 +41,8 @@ export const DockCard = ({ children, value, src }) => {
 	});
 
 	function openSource() {
-		const urlToOpen = "https://github.com/martinwoo7/Portfolio"
-		window.open(urlToOpen, '_blank')
+		const urlToOpen = "https://github.com/martinwoo7/Portfolio";
+		window.open(urlToOpen, "_blank");
 	}
 
 	const opacity = useSpringValue(0);
@@ -112,7 +113,6 @@ export const DockCard = ({ children, value, src }) => {
 							timeoutRef.current = undefined;
 							if (!opened.includes(value)) {
 								if (value === "Source") {
-
 								} else {
 									console.log("Opening", value);
 									dispatch(openWindow(value));
@@ -136,6 +136,16 @@ export const DockCard = ({ children, value, src }) => {
 			isAnimating.current = false;
 		}
 	};
+	const handleMobile = (e) => {
+		if (!opened.includes(value)) {
+			if (value === "Source") {
+			} else {
+				console.log("Opening", value);
+				dispatch(openWindow(value));
+				dispatch(toggleMobile())
+			}
+		}
+	};
 	useEffect(() => {
 		if (!opened.includes(value)) {
 			opacity.start(0);
@@ -150,30 +160,52 @@ export const DockCard = ({ children, value, src }) => {
 				}}
 			>
 				<animated.div
-					className="bg-black/20 rounded-md mb-2 text-white flex justify-center text-sm"
+					className="hidden md:flex bg-black/20 rounded-md mb-2 text-white justify-center text-sm"
 					style={props}
 				>
 					{value}
 				</animated.div>
-				<animated.button
-					{...hover()}
-					ref={cardRef}
-					className={`${styles.dockCard}`}
-					onClick={value === "Source" ? openSource : handleClick}
-					style={{
-						width: size,
-						height: size,
-						// y,
-						backgroundImage: `url(${src})`,
-						backgroundPosition: "center",
-						backgroundSize: "cover",
-						backgroundRepeat: "no-repeat",
-					}}
-				>
-					{children}
-				</animated.button>
+				{!flat ? (
+					<animated.button
+						{...hover()}
+						ref={cardRef}
+						className={`${styles.dockCard}`}
+						onClick={value === "Source" ? openSource : handleClick}
+						style={{
+							width: size,
+							height: size,
+							// y,
+							backgroundImage: `url(${src})`,
+							backgroundPosition: "center",
+							backgroundSize: "cover",
+							backgroundRepeat: "no-repeat",
+						}}
+					>
+						{children}
+					</animated.button>
+				) : (
+					<animated.button
+						ref={cardRef}
+						className={`${styles.dockCard}`}
+						onClick={value === "Source" ? openSource : handleMobile}
+						style={{
+							width: size,
+							height: size,
+							// y,
+							backgroundImage: `url(${src})`,
+							backgroundPosition: "center",
+							backgroundSize: "cover",
+							backgroundRepeat: "no-repeat",
+						}}
+					>
+						{children}
+					</animated.button>
+				)}
 			</animated.div>
-			<animated.div className={styles.dockDot} style={{ opacity }} />
+
+			{!flat && (
+				<animated.div className={styles.dockDot} style={{ opacity }} />
+			)}
 		</div>
 	);
 };
